@@ -46,8 +46,9 @@ data class LeagueRecord(
 
 data class DivisionInfo(
     val id: Int,
-    val name: String,   // "AL East", "NL West", etc.
-    val league: LeagueInfo
+    val name: String?,
+    val league: LeagueInfo,
+    val customLeague: League? = null
 )
 
 data class LeagueInfo(

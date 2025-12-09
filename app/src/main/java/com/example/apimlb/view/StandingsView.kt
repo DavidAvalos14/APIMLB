@@ -15,7 +15,6 @@ import androidx.navigation.NavController
 import com.example.apimlb.components.MainIconButton
 import com.example.apimlb.components.StandingCard
 import com.example.apimlb.components.TitleBar
-import com.example.apimlb.model.StandingRecord
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import com.example.apimlb.viewModel.StandingsViewModel
@@ -24,6 +23,7 @@ import com.example.apimlb.viewModel.StandingsViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun StandingsView(navController: NavController) {
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -39,7 +39,10 @@ fun StandingsView(navController: NavController) {
             )
         }
     ) { innerPadding ->
-        ContentStandingView(navController, Modifier.padding(innerPadding))
+        ContentStandingView(
+            navController = navController,
+            modifier = Modifier.padding(innerPadding)
+        )
     }
 }
 
@@ -49,12 +52,10 @@ fun ContentStandingView(
     modifier: Modifier = Modifier,
     viewModel: StandingsViewModel = viewModel()
 ) {
-    // Temporadas disponibles
     val availableSeasons = (2016..2025).toList().reversed()
     var selectedYear by remember { mutableStateOf(availableSeasons.first()) }
     var expanded by remember { mutableStateOf(false) }
 
-    // Cargar standings al cambiar la temporada
     LaunchedEffect(selectedYear) {
         viewModel.loadStandings(selectedYear)
     }
@@ -64,10 +65,13 @@ fun ContentStandingView(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        // Dropdown para seleccionar temporada
-        Box(modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp)) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 12.dp)
+        ) {
             Button(onClick = { expanded = true }) {
-                Text(text = "Season: $selectedYear")
+                Text("Season: $selectedYear")
             }
             DropdownMenu(
                 expanded = expanded,
@@ -85,7 +89,6 @@ fun ContentStandingView(
             }
         }
 
-        // Mostrar loading
         if (viewModel.isLoading) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
@@ -93,19 +96,16 @@ fun ContentStandingView(
             return
         }
 
-        // Mostrar error
         viewModel.errorMessage?.let { error ->
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = error, color = MaterialTheme.colorScheme.error)
+                Text(error, color = MaterialTheme.colorScheme.error)
             }
             return
         }
 
-        // Lista de standings agrupada por liga → división
-        // Lista de standings agrupada por liga → división
         LazyColumn {
             viewModel.standingsRecords
-                .groupBy { it.division?.league?.name ?: "Unknown League" }
+                .groupBy { it.division.league.name }
                 .forEach { (leagueName, recordsInLeague) ->
 
                     // Encabezado de liga
@@ -119,25 +119,26 @@ fun ContentStandingView(
 
                     recordsInLeague.forEach { record ->
 
-                        // val divisionName = record.division?.name ?: "Unknown Division"
-
+                        // Encabezado de división
                         item {
                             Text(
-                                text = "--- ${record.division?.name} ---",
+                                text = "--- ${record.division.name} ---",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = Color.DarkGray,
-                                modifier = Modifier.padding(start = 8.dp, top = 4.dp, bottom = 4.dp)
+                                modifier = Modifier.padding(
+                                    start = 8.dp,
+                                    top = 4.dp,
+                                    bottom = 4.dp
+                                )
                             )
                         }
 
                         // Equipos
-                        items(record.teamRecords ?: emptyList()) { team ->
+                        items(record.teamRecords) { team ->
                             StandingCard(team)
                         }
                     }
                 }
         }
-
-
     }
 }
