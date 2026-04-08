@@ -3,13 +3,14 @@ package com.example.apimlb.view
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -31,12 +32,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.apimlb.R
 import com.example.apimlb.components.GameCard
 import com.example.apimlb.components.MainIconButton
 import com.example.apimlb.components.TitleBar
@@ -157,11 +155,15 @@ fun ContentJuegoView(navController: NavController, modifier: Modifier = Modifier
         Spacer(modifier = Modifier.height(32.dp))
 
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Mostrar juegos obtenidos por el ViewModel
-            viewModel.games.forEach { game ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            items(viewModel.games) { game ->
                 GameCard(game)
             }
         }
+
     }
 }
