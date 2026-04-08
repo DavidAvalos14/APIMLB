@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.apimlb.data.RetrofitClient
-import com.example.apimlb.model.League
 import com.example.apimlb.model.LeagueInfo
 import com.example.apimlb.model.StandingRecord
 import kotlinx.coroutines.launch

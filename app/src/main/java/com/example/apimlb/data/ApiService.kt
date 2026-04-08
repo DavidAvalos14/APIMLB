@@ -1,7 +1,6 @@
 package com.example.apimlb.data
 
 import com.example.apimlb.model.StandingResponse
-import com.example.apimlb.model.StandingTeam
 import retrofit2.http.GET
 import retrofit2.http.Query
 import retrofit2.Retrofit
